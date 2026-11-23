@@ -1,0 +1,21 @@
+{
+  "name": "labcare-solicitudes",
+  "version": "1.0.0",
+  "description": "Módulo web de solicitudes de mantenimiento de equipos para LabCare (examen práctico integrador, escenario ficticio)",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "node --watch src/app.js",
+    "db:init": "node database/inicializar.js",
+    "test": "node pruebas/pruebas-api.js"
+  },
+  "author": "Gustavo Rodriguez",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "dotenv": "^18.0.10",
+    "ejs": "^7.0.2",
+    "express": "^4.22.3",
+    "mysql2": "^3.24.6"
+  }
+}
