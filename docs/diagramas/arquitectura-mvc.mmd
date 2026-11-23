@@ -1,0 +1,20 @@
+flowchart TB
+  usuario["«persona»<br>Personal de laboratorio"]
+  subgraph navegador["Navegador web"]
+    vista["Vista<br>src/views/index.ejs + public/js/app.js<br>V1: validación previa en el formulario<br>y aviso de transición no permitida"]
+  end
+  subgraph app["Aplicación web LabCare: Node.js + Express"]
+    rutas["Rutas<br>src/routes/apiRoutes.js<br>GET, POST, PUT, PATCH, DELETE /api/solicitudes"]
+    controlador["Controlador<br>src/controllers/solicitudController.js<br>V2: solicitudValidator.js valida formato, longitudes y valores"]
+    servicio["Servicio<br>src/services/solicitudService.js<br>V3: equipo existente y disponible, estado inicial,<br>código SOL-AAAAMMDD-XXX, flujo de estados"]
+    modelos["Modelos<br>src/models/solicitudModel.js y equipoModel.js<br>consultas parametrizadas con mysql2"]
+    errores["Middleware de errores<br>mensajes genéricos, sin trazas"]
+  end
+  bd[("Contenedor: MySQL 8.4<br>base labcare_db<br>V4: NOT NULL, UNIQUE, FOREIGN KEY y CHECK")]
+  usuario -->|usa| vista
+  vista -->|"fetch JSON (HTTP)"| rutas
+  rutas --> controlador
+  controlador --> servicio
+  servicio --> modelos
+  modelos -->|SQL parametrizado| bd
+  controlador -.-> errores

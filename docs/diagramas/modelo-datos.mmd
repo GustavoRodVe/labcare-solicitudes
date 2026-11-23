@@ -1,0 +1,21 @@
+erDiagram
+  EQUIPO ||--o{ SOLICITUD : "recibe"
+  EQUIPO {
+    int id PK
+    varchar codigo UK "EQ-001"
+    varchar nombre
+    varchar ubicacion
+    varchar estado "OPERATIVO, EN_MANTENIMIENTO, DE_BAJA"
+  }
+  SOLICITUD {
+    int id PK
+    varchar codigo_solicitud UK "SOL-AAAAMMDD-XXX"
+    int equipo_id FK
+    varchar solicitante "min 3"
+    varchar descripcion "min 10"
+    varchar prioridad "BAJA, MEDIA, ALTA"
+    varchar estado "PENDIENTE, EN_PROCESO, RESUELTA, CANCELADA"
+    datetime fecha_registro
+    datetime fecha_actualizacion
+    boolean activo "eliminación lógica"
+  }
