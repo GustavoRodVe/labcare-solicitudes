@@ -48,35 +48,6 @@ Las validaciones de la interfaz solo ayudan al usuario a corregir antes de envia
 
 ![Diagrama de casos de uso](docs/diagramas/casos-de-uso.png)
 
-```mermaid
-flowchart LR
-  actor["«actor»<br>Personal de laboratorio"]
-  subgraph sistema["Sistema LabCare"]
-    direction TB
-    uc1(["Registrar solicitud"])
-    uc2(["Listar solicitudes activas"])
-    uc3(["Consultar detalle"])
-    uc4(["Editar solicitud"])
-    uc5(["Cambiar estado"])
-    uc6(["Buscar y filtrar"])
-    uc7(["Eliminar lógicamente"])
-    inc1(["Validar datos de la solicitud"])
-    inc2(["Verificar transición permitida"])
-    inc3(["Generar código único"])
-  end
-  actor --- uc1
-  actor --- uc2
-  actor --- uc3
-  actor --- uc4
-  actor --- uc5
-  actor --- uc6
-  actor --- uc7
-  uc1 -. "«include»" .-> inc1
-  uc1 -. "«include»" .-> inc3
-  uc4 -. "«include»" .-> inc1
-  uc5 -. "«include»" .-> inc2
-  uc6 -. "«extend»" .-> uc2
-```
 
 ## Arquitectura (C4 de contenedores con capas MVC)
 
@@ -84,25 +55,11 @@ La aplicación es un solo contenedor Node.js con Express que sirve la vista y la
 
 ![Arquitectura MVC](docs/diagramas/arquitectura-mvc.png)
 
-```mermaid
-flowchart TB
-  usuario["«persona»<br>Personal de laboratorio"]
-  subgraph navegador["Navegador web"]
-    vista["Vista<br>src/views/index.ejs + public/js/app.js<br>V1: validación previa en el formulario<br>y aviso de transición no permitida"]
-  end
-  subgraph app["Servidor Express"]
-    rutas["Rutas<br>src/routes/apiRoutes.js"]
-    controlador["Controlador<br>src/controllers/solicitudController.js<br>V2: solicitudValidator.js"]
-    servicio["Servicio<br>src/services/solicitudService.js<br>V3: reglas de negocio y flujo de estados"]
-    modelos["Modelos<br>solicitudModel.js y equipoModel.js<br>consultas parametrizadas"]
-  end
-  bd[("MySQL 8.4 · labcare_db<br>V4: NOT NULL, UNIQUE, FK y CHECK")]
-  usuario --> vista
-  vista -->|"fetch JSON"| rutas --> controlador --> servicio --> modelos -->|SQL parametrizado| bd
-```
 
 ## Modelo de datos
 
 ![Modelo de datos](docs/diagramas/modelo-datos.png)
+
+Las fuentes de los diagramas están en `docs/diagramas` (SVG para los casos de uso y la arquitectura, Mermaid para el modelo de datos).
 
 La relación es de uno a muchos: un equipo puede tener muchas solicitudes y cada solicitud pertenece a un solo equipo. La clave foránea usa `ON DELETE RESTRICT`, así que no se puede borrar un equipo que tenga solicitudes y nunca quedan solicitudes huérfanas. El script completo está en `database/labcare.sql`.

@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1300" height="1290" viewBox="0 0 1300 1290" font-family="Arial, Helvetica, sans-serif">
+  <defs>
+    <marker id="punta" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto">
+      <path d="M0,0 L12,6 L0,12 z" fill="#444"/>
+    </marker>
+  </defs>
+  <rect width="1300" height="1290" fill="#ffffff"/>
+
+  <!-- Persona -->
+  <rect x="440" y="20" width="420" height="100" rx="14" fill="#08427b"/>
+  <text x="650" y="58" text-anchor="middle" font-size="22" font-weight="bold" fill="#fff">Personal de laboratorio</text>
+  <text x="650" y="84" text-anchor="middle" font-size="16" fill="#dbe7f5">[Persona]</text>
+  <text x="650" y="106" text-anchor="middle" font-size="16" fill="#dbe7f5">Registra y da seguimiento a las solicitudes</text>
+
+  <line x1="650" y1="120" x2="650" y2="186" stroke="#444" stroke-width="2.5" marker-end="url(#punta)"/>
+  <text x="668" y="160" font-size="17" fill="#333">Usa la aplicación en el navegador</text>
+
+  <!-- Contenedor: navegador -->
+  <rect x="280" y="190" width="740" height="200" fill="none" stroke="#666" stroke-width="2" stroke-dasharray="10 6"/>
+  <text x="296" y="216" font-size="17" font-weight="bold" fill="#444">Navegador web</text>
+  <rect x="380" y="232" width="540" height="140" rx="10" fill="#1168bd"/>
+  <text x="650" y="266" text-anchor="middle" font-size="21" font-weight="bold" fill="#fff">Vista</text>
+  <text x="650" y="294" text-anchor="middle" font-size="17" fill="#fff">src/views/index.ejs + public/js/app.js</text>
+  <text x="650" y="324" text-anchor="middle" font-size="17" fill="#ffe08a">V1: validación previa del formulario</text>
+  <text x="650" y="350" text-anchor="middle" font-size="17" fill="#ffe08a">y aviso de transición no permitida</text>
+
+  <line x1="650" y1="390" x2="650" y2="476" stroke="#444" stroke-width="2.5" marker-end="url(#punta)"/>
+  <text x="668" y="426" font-size="17" fill="#333">fetch con JSON (HTTP)</text>
+  <text x="668" y="450" font-size="17" fill="#333">GET, POST, PUT, PATCH, DELETE /api/solicitudes</text>
+
+  <!-- Contenedor: aplicación Express -->
+  <rect x="120" y="480" width="1060" height="590" fill="#f7f9fc" stroke="#666" stroke-width="2" stroke-dasharray="10 6"/>
+  <text x="136" y="508" font-size="17" font-weight="bold" fill="#444">Aplicación web LabCare [Contenedor: Node.js + Express]</text>
+
+  <rect x="380" y="528" width="540" height="84" rx="10" fill="#85bbf0" stroke="#5a95cf"/>
+  <text x="650" y="562" text-anchor="middle" font-size="20" font-weight="bold" fill="#0b2a4a">Rutas</text>
+  <text x="650" y="590" text-anchor="middle" font-size="17" fill="#0b2a4a">src/routes/apiRoutes.js</text>
+
+  <line x1="650" y1="612" x2="650" y2="644" stroke="#444" stroke-width="2.5" marker-end="url(#punta)"/>
+
+  <rect x="380" y="648" width="540" height="112" rx="10" fill="#85bbf0" stroke="#5a95cf"/>
+  <text x="650" y="682" text-anchor="middle" font-size="20" font-weight="bold" fill="#0b2a4a">Controlador</text>
+  <text x="650" y="710" text-anchor="middle" font-size="17" fill="#0b2a4a">src/controllers/solicitudController.js</text>
+  <text x="650" y="740" text-anchor="middle" font-size="17" fill="#7a1f00">V2: solicitudValidator.js (formato, longitudes, valores)</text>
+
+  <line x1="920" y1="704" x2="976" y2="704" stroke="#444" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#punta)"/>
+  <rect x="980" y="660" width="180" height="88" rx="10" fill="#e5e7eb" stroke="#999"/>
+  <text x="1070" y="694" text-anchor="middle" font-size="17" font-weight="bold" fill="#222">Manejo de</text>
+  <text x="1070" y="716" text-anchor="middle" font-size="17" font-weight="bold" fill="#222">errores</text>
+  <text x="1070" y="738" text-anchor="middle" font-size="15" fill="#333">sin trazas internas</text>
+
+  <line x1="650" y1="760" x2="650" y2="792" stroke="#444" stroke-width="2.5" marker-end="url(#punta)"/>
+
+  <rect x="380" y="796" width="540" height="140" rx="10" fill="#85bbf0" stroke="#5a95cf"/>
+  <text x="650" y="830" text-anchor="middle" font-size="20" font-weight="bold" fill="#0b2a4a">Servicio</text>
+  <text x="650" y="858" text-anchor="middle" font-size="17" fill="#0b2a4a">src/services/solicitudService.js</text>
+  <text x="650" y="888" text-anchor="middle" font-size="17" fill="#7a1f00">V3: equipo existente y disponible, estado inicial,</text>
+  <text x="650" y="914" text-anchor="middle" font-size="17" fill="#7a1f00">código SOL-AAAAMMDD-XXX y flujo de estados</text>
+
+  <line x1="650" y1="936" x2="650" y2="968" stroke="#444" stroke-width="2.5" marker-end="url(#punta)"/>
+
+  <rect x="380" y="972" width="540" height="84" rx="10" fill="#85bbf0" stroke="#5a95cf"/>
+  <text x="650" y="1006" text-anchor="middle" font-size="20" font-weight="bold" fill="#0b2a4a">Modelos</text>
+  <text x="650" y="1034" text-anchor="middle" font-size="17" fill="#0b2a4a">solicitudModel.js y equipoModel.js, consultas con ?</text>
+
+  <line x1="650" y1="1056" x2="650" y2="1130" stroke="#444" stroke-width="2.5" marker-end="url(#punta)"/>
+  <text x="668" y="1102" font-size="17" fill="#333">SQL parametrizado (mysql2)</text>
+
+  <!-- Contenedor: base de datos -->
+  <path d="M400,1150 L400,1250 A250,18 0 0 0 900,1250 L900,1150" fill="#1168bd" stroke="#0b4f94" stroke-width="2"/>
+  <ellipse cx="650" cy="1150" rx="250" ry="18" fill="#3a85d0" stroke="#0b4f94" stroke-width="2"/>
+  <text x="650" y="1196" text-anchor="middle" font-size="20" font-weight="bold" fill="#fff">Base de datos labcare_db</text>
+  <text x="650" y="1222" text-anchor="middle" font-size="16" fill="#dbe7f5">[Contenedor: MySQL 8.4] tablas equipo y solicitud</text>
+  <text x="650" y="1250" text-anchor="middle" font-size="17" fill="#ffe08a">V4: NOT NULL, UNIQUE, FOREIGN KEY y CHECK</text>
+</svg>

@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="880" viewBox="0 0 1400 880" font-family="Arial, Helvetica, sans-serif">
+  <defs>
+    <marker id="flecha" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+      <path d="M1,1 L11,6 L1,11" fill="none" stroke="#333" stroke-width="1.6"/>
+    </marker>
+  </defs>
+  <rect width="1400" height="880" fill="#ffffff"/>
+
+  <!-- Límite del sistema -->
+  <rect x="340" y="30" width="1030" height="820" fill="#fbfcfe" stroke="#333" stroke-width="2"/>
+  <text x="855" y="66" text-anchor="middle" font-size="22" font-weight="bold" fill="#222">Sistema LabCare: módulo de solicitudes de mantenimiento</text>
+
+  <!-- Actor -->
+  <g stroke="#222" stroke-width="3" fill="none">
+    <circle cx="150" cy="380" r="26"/>
+    <line x1="150" y1="406" x2="150" y2="490"/>
+    <line x1="100" y1="432" x2="200" y2="432"/>
+    <line x1="150" y1="490" x2="108" y2="560"/>
+    <line x1="150" y1="490" x2="192" y2="560"/>
+  </g>
+  <text x="150" y="596" text-anchor="middle" font-size="20" font-weight="bold" fill="#222">Personal de</text>
+  <text x="150" y="620" text-anchor="middle" font-size="20" font-weight="bold" fill="#222">laboratorio</text>
+
+  <!-- Asociaciones actor - casos de uso (líneas simples, sin flecha) -->
+  <g stroke="#444" stroke-width="1.8">
+    <line x1="205" y1="440" x2="412" y2="130"/>
+    <line x1="205" y1="440" x2="412" y2="230"/>
+    <line x1="205" y1="440" x2="412" y2="340"/>
+    <line x1="205" y1="440" x2="412" y2="450"/>
+    <line x1="205" y1="440" x2="412" y2="560"/>
+    <line x1="205" y1="440" x2="412" y2="670"/>
+    <line x1="205" y1="440" x2="412" y2="780"/>
+  </g>
+
+  <!-- Casos de uso principales -->
+  <g fill="#e8f0fa" stroke="#1d4e89" stroke-width="2">
+    <ellipse cx="560" cy="130" rx="150" ry="36"/>
+    <ellipse cx="560" cy="230" rx="150" ry="36"/>
+    <ellipse cx="560" cy="340" rx="150" ry="36"/>
+    <ellipse cx="560" cy="450" rx="150" ry="36"/>
+    <ellipse cx="560" cy="560" rx="150" ry="36"/>
+    <ellipse cx="560" cy="670" rx="150" ry="36"/>
+    <ellipse cx="560" cy="780" rx="150" ry="36"/>
+  </g>
+  <g font-size="19" text-anchor="middle" fill="#111">
+    <text x="560" y="137">Registrar solicitud</text>
+    <text x="560" y="237">Editar solicitud</text>
+    <text x="560" y="347">Listar solicitudes activas</text>
+    <text x="560" y="457">Buscar y filtrar</text>
+    <text x="560" y="567">Consultar detalle</text>
+    <text x="560" y="677">Cambiar estado</text>
+    <text x="560" y="787">Eliminar lógicamente</text>
+  </g>
+
+  <!-- Casos de uso incluidos -->
+  <g fill="#f3f4f6" stroke="#555" stroke-width="2">
+    <ellipse cx="1150" cy="110" rx="180" ry="36"/>
+    <ellipse cx="1150" cy="240" rx="180" ry="36"/>
+    <ellipse cx="1150" cy="670" rx="180" ry="36"/>
+  </g>
+  <g font-size="19" text-anchor="middle" fill="#111">
+    <text x="1150" y="117">Generar código único</text>
+    <text x="1150" y="247">Validar datos de la solicitud</text>
+    <text x="1150" y="677">Verificar transición permitida</text>
+  </g>
+
+  <!-- include / extend (líneas punteadas con flecha abierta) -->
+  <g stroke="#333" stroke-width="1.8" stroke-dasharray="8 6" fill="none" marker-end="url(#flecha)">
+    <line x1="710" y1="124" x2="968" y2="112"/>
+    <line x1="702" y1="146" x2="976" y2="228"/>
+    <line x1="710" y1="232" x2="968" y2="240"/>
+    <line x1="710" y1="670" x2="968" y2="670"/>
+    <line x1="560" y1="414" x2="560" y2="378"/>
+  </g>
+  <g font-size="17" fill="#8a3b12" text-anchor="middle">
+    <text x="840" y="106">«include»</text>
+    <text x="800" y="200">«include»</text>
+    <text x="870" y="262">«include»</text>
+    <text x="840" y="660">«include»</text>
+    <text x="625" y="402">«extend»</text>
+  </g>
+</svg>
