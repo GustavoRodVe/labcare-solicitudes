@@ -1,5 +1,5 @@
 {
-  "fecha": "2026-11-23T15:45:07.712Z",
+  "fecha": "2026-11-23T15:53:17.939Z",
   "resultados": [
     {
       "id": "CP-01",
@@ -40,7 +40,7 @@
       "id": "CP-06",
       "accion": "Editar la solicitud de CP-01 (prioridad MEDIA, otra descripción) e intentar cambiar su código y estado por el cuerpo.",
       "esperado": "Se actualiza únicamente el registro seleccionado.",
-      "real": "HTTP 200; prioridad ALTA -> MEDIA; código, estado y fecha_registro sin cambios (SOL-20261123-001, PENDIENTE, 2026-11-23 11:45:07); la otra solicitud (SOL-20261123-002) quedó igual.",
+      "real": "HTTP 200; prioridad ALTA -> MEDIA; código, estado y fecha_registro sin cambios (SOL-20261123-001, PENDIENTE, 2026-11-23 11:53:17); la otra solicitud (SOL-20261123-002) quedó igual.",
       "estado": "APROBADO"
     },
     {

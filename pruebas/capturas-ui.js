@@ -73,8 +73,9 @@ async function main() {
   await pagina.fill('#descripcion', 'Falla');
   await pagina.click('#btn-guardar');
   await captura('04-validacion-interfaz');
-  await pagina.click('#btn-cancelar').catch(() => {});
-  await pagina.evaluate(() => document.getElementById('form-solicitud').reset());
+  // Se recarga la pantalla para seguir el recorrido desde un formulario limpio.
+  await pagina.reload();
+  await pagina.waitForSelector('#cuerpo-tabla .codigo');
 
   // Detalle
   await fila('María Fernández').getByRole('button', { name: 'Ver' }).click();
