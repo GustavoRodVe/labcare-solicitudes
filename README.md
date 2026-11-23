@@ -78,7 +78,7 @@ src/
 
 ## Pruebas
 
-`npm test` ejecuta la matriz de pruebas del examen (CP-01 a CP-12) y cuatro pruebas extra contra la API y la base de datos reales. Levanta la aplicación en un puerto libre y guarda el resultado en `pruebas/resultados.json`. Conviene ejecutarlo sobre una base recién inicializada.
+`npm test` ejecuta la matriz de pruebas del examen (CP-01 a CP-12) y seis pruebas extra contra la API y la base de datos reales. Levanta la aplicación en un puerto libre y guarda el resultado en `pruebas/resultados.json`. Conviene ejecutarlo sobre una base recién inicializada.
 
 `node pruebas/capturas-ui.js` recorre la interfaz con Playwright y guarda las capturas en `evidencias/capturas`. Necesita Playwright instalado de forma global (`npm i -g playwright` y `npx playwright install chromium`) y reinicia la base con los datos semilla.
 
@@ -107,7 +107,7 @@ curl -X POST http://localhost:3000/api/solicitudes -H "Content-Type: application
 - Listado de solicitudes activas con código, equipo, solicitante, prioridad, estado y fecha de registro.
 - Registro con selección de equipo, validación en el navegador y en el servidor, estado inicial PENDIENTE y código SOL-AAAAMMDD-XXX generado por el servidor.
 - Detalle por ID, con respuesta 404 cuando la solicitud no existe o fue eliminada.
-- Edición de los datos descriptivos sin tocar el id, el código, el estado ni la fecha de registro.
+- Edición de los datos descriptivos sin tocar el id, el código, el estado ni la fecha de registro. Las solicitudes RESUELTA o CANCELADA ya no se pueden editar.
 - Cambio de estado con el flujo PENDIENTE, EN_PROCESO, RESUELTA o CANCELADA, aviso en pantalla y rechazo 409 en el servidor para transiciones no permitidas.
 - Eliminación lógica con confirmación previa.
 - Búsqueda por código, solicitante o equipo sin distinguir mayúsculas ni tildes, y filtros por prioridad y estado.

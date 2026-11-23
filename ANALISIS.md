@@ -39,7 +39,7 @@ El actor principal es el Personal de laboratorio, que reporta las fallas, revisa
 | EN_PROCESO puede pasar a RESUELTA o CANCELADA. | Servicio (`TRANSICIONES`). |
 | RESUELTA y CANCELADA son finales: no vuelven a PENDIENTE ni a EN_PROCESO. | Servicio; responde 409. |
 | La edición no cambia el id, el código, el estado ni la fecha de registro. | El `UPDATE` del modelo solo toca equipo, solicitante, descripción y prioridad. |
-| Una solicitud en estado final ya no se edita. Es una decisión nuestra para que no cambie la información de un trabajo cerrado. | Servicio; responde 409. |
+| Una solicitud en estado final ya no se edita. Es una decisión nuestra para que no cambie la información de un trabajo cerrado. | Servicio; responde 409. La interfaz deshabilita el botón Editar. |
 | Eliminación lógica: no hay `DELETE` físico, se pone `activo = FALSE` y se excluye del listado. | Modelo (`desactivar`). |
 
 Las validaciones de la interfaz solo ayudan al usuario a corregir antes de enviar. El servidor vuelve a validar todo, y la base de datos tiene sus propias restricciones como última barrera.
