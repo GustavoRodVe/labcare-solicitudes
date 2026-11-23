@@ -43,6 +43,11 @@
     if (tipo === 'exito') temporizadorMensaje = setTimeout(() => caja.classList.add('oculto'), 6000);
   }
 
+  function ocultarMensaje() {
+    clearTimeout(temporizadorMensaje);
+    caja.classList.add('oculto');
+  }
+
   function formatearFecha(texto) {
     if (!texto) return '';
     const [fecha, hora = ''] = texto.split(' ');
@@ -192,6 +197,7 @@
 
   function modoEdicion(s) {
     limpiarErrores();
+    ocultarMensaje();
     $('solicitud-id').value = s.id;
     $('equipo_id').value = String(s.equipo_id);
     $('solicitante').value = s.solicitante;
@@ -234,7 +240,19 @@
     await cargarSolicitudes();
   });
 
-  btnCancelar.addEventListener('click', modoRegistro);
+  btnCancelar.addEventListener('click', () => {
+    modoRegistro();
+    ocultarMensaje();
+  });
+
+  // Al corregir un campo se quita su marca de error.
+  form.addEventListener('input', (evento) => {
+    const campo = evento.target;
+    if (!campo.id || !campo.classList.contains('invalido')) return;
+    campo.classList.remove('invalido');
+    const aviso = form.querySelector(`.error-campo[data-campo="${campo.id}"]`);
+    if (aviso) aviso.textContent = '';
+  });
 
   // ---------- Acciones de la tabla ----------
 
