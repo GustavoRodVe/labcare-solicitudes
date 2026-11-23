@@ -156,11 +156,13 @@ async function main() {
     ].join('\n');
     document.body.innerHTML = '';
     const pre = document.createElement('pre');
-    pre.style.cssText = 'font: 14px Consolas, monospace; white-space: pre-wrap; padding: 16px; margin: 0;';
+    pre.id = 'salida';
+    pre.style.cssText = 'font: 14px Consolas, monospace; white-space: pre-wrap; padding: 16px; margin: 0; width: 860px; background: #fff; border: 1px solid #ccc;';
     pre.textContent = 'Peticiones a la API enviadas desde el navegador (sin validación de la interfaz)\n\n' + salida;
     document.body.appendChild(pre);
   });
-  await captura('17-backend-rechaza', true);
+  await pagina.locator('#salida').screenshot({ path: path.join(SALIDA, '17-backend-rechaza.png') });
+  console.log('Captura: 17-backend-rechaza');
 
   // Evidencia de la base de datos con el cliente mysql
   const bloques = [

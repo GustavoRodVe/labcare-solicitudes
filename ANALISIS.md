@@ -90,7 +90,7 @@ flowchart TB
   subgraph navegador["Navegador web"]
     vista["Vista<br>src/views/index.ejs + public/js/app.js<br>V1: validación previa en el formulario<br>y aviso de transición no permitida"]
   end
-  subgraph app["Aplicación web LabCare: Node.js + Express"]
+  subgraph app["Servidor Express"]
     rutas["Rutas<br>src/routes/apiRoutes.js"]
     controlador["Controlador<br>src/controllers/solicitudController.js<br>V2: solicitudValidator.js"]
     servicio["Servicio<br>src/services/solicitudService.js<br>V3: reglas de negocio y flujo de estados"]
