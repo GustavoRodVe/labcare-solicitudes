@@ -1,0 +1,117 @@
+{
+  "fecha": "2026-11-23T15:17:24.532Z",
+  "resultados": [
+    {
+      "id": "CP-01",
+      "accion": "Registrar solicitud con datos válidos y equipo existente (EQ-001).",
+      "esperado": "Se crea una solicitud PENDIENTE, con código único y persistencia.",
+      "real": "HTTP 201; código SOL-20261123-001; estado PENDIENTE; fila en MySQL con id 1.",
+      "estado": "APROBADO"
+    },
+    {
+      "id": "CP-02",
+      "accion": "Solicitante vacío y luego con 2 caracteres (\"  Al  \").",
+      "esperado": "El backend rechaza el registro; no se guarda.",
+      "real": "HTTP 400 \"El solicitante es obligatorio.\" y HTTP 400 \"El solicitante debe tener al menos 3 caracteres.\"; filas antes 1, después 1.",
+      "estado": "APROBADO"
+    },
+    {
+      "id": "CP-03",
+      "accion": "Descripción vacía y luego \"  Falla  \" (5 caracteres sin espacios externos).",
+      "esperado": "El backend rechaza el registro; no se guarda.",
+      "real": "HTTP 400 \"La descripción es obligatoria.\" y HTTP 400 \"La descripción debe tener al menos 10 caracteres.\"; filas antes 1, después 1.",
+      "estado": "APROBADO"
+    },
+    {
+      "id": "CP-04",
+      "accion": "Prioridad \"URGENTE\".",
+      "esperado": "El backend rechaza el valor.",
+      "real": "HTTP 400 \"La prioridad debe ser BAJA, MEDIA o ALTA.\"; no se guardó (filas 1 -> 1).",
+      "estado": "APROBADO"
+    },
+    {
+      "id": "CP-05",
+      "accion": "Registrar con equipo_id 999 (no existe).",
+      "esperado": "El sistema rechaza la operación y no crea solicitud huérfana.",
+      "real": "HTTP 400 \"El equipo seleccionado no existe.\"; filas 1 -> 1; huérfanas en la base: 0.",
+      "estado": "APROBADO"
+    },
+    {
+      "id": "CP-06",
+      "accion": "Editar la solicitud de CP-01 (prioridad MEDIA, otra descripción) e intentar cambiar su código y estado por el cuerpo.",
+      "esperado": "Se actualiza únicamente el registro seleccionado.",
+      "real": "HTTP 200; prioridad ALTA -> MEDIA; código, estado y fecha_registro sin cambios (SOL-20261123-001, PENDIENTE, 2026-11-23 11:17:24); la otra solicitud (SOL-20261123-002) quedó igual.",
+      "estado": "APROBADO"
+    },
+    {
+      "id": "CP-07",
+      "accion": "Cambiar PENDIENTE a EN_PROCESO.",
+      "esperado": "La transición se acepta.",
+      "real": "HTTP 200 \"Solicitud SOL-20261123-001 ahora está EN_PROCESO.\"; estado en MySQL: EN_PROCESO.",
+      "estado": "APROBADO"
+    },
+    {
+      "id": "CP-08",
+      "accion": "Pasar a RESUELTA y luego intentar RESUELTA a PENDIENTE.",
+      "esperado": "La transición se rechaza y el estado no cambia.",
+      "real": "EN_PROCESO -> RESUELTA: HTTP 200. RESUELTA -> PENDIENTE: HTTP 409 \"Transición no permitida: RESUELTA a PENDIENTE. RESUELTA es un estado final y ya no puede cambiar.\"; estado en MySQL: RESUELTA.",
+      "estado": "APROBADO"
+    },
+    {
+      "id": "CP-09",
+      "accion": "Eliminar lógicamente la solicitud de CP-01.",
+      "esperado": "Desaparece del listado activo, pero permanece en la base de datos.",
+      "real": "HTTP 200; aparece en el listado: no; fila en MySQL: sí, activo=0; detalle por ID: HTTP 404.",
+      "estado": "APROBADO"
+    },
+    {
+      "id": "CP-10",
+      "accion": "Buscar \"quispe\" y \"PROYECTOR\" (minúsculas/mayúsculas) y filtrar prioridad BAJA + estado PENDIENTE, y prioridad ALTA.",
+      "esperado": "El listado muestra solo coincidencias válidas.",
+      "real": "\"quispe\": 1 resultado(s); \"PROYECTOR\": 1; BAJA+PENDIENTE: 1; ALTA: 1, todos coinciden; filtro \"URGENTE\": HTTP 400.",
+      "estado": "APROBADO"
+    },
+    {
+      "id": "CP-11",
+      "accion": "Consultar, editar, cambiar estado y eliminar el ID 999999 (no existe).",
+      "esperado": "Se informa que el recurso no existe; no se produce error no controlado.",
+      "real": "GET 404, PUT 404, PATCH 404, DELETE 404: \"La solicitud no existe o fue eliminada.\".",
+      "estado": "APROBADO"
+    },
+    {
+      "id": "CP-12",
+      "accion": "Registrar, detener el servidor HTTP, iniciar uno nuevo y consultar por ID.",
+      "esperado": "Los datos siguen disponibles desde la base de datos.",
+      "real": "Registrada SOL-20261123-004; tras reiniciar el servidor (nuevo puerto) GET devuelve HTTP 200 con el mismo código.",
+      "estado": "APROBADO"
+    },
+    {
+      "id": "EX-01",
+      "accion": "Equipo EQ-004 marcado como DE_BAJA e intentar registrar una solicitud con él.",
+      "esperado": "El backend rechaza el equipo no disponible.",
+      "real": "HTTP 400 \"El equipo seleccionado no está disponible.\".",
+      "estado": "APROBADO"
+    },
+    {
+      "id": "EX-02",
+      "accion": "Búsqueda con inyección SQL: q = ' OR 1=1 -- ",
+      "esperado": "No devuelve todo el listado ni produce error.",
+      "real": "HTTP 200; resultados: 0.",
+      "estado": "APROBADO"
+    },
+    {
+      "id": "EX-03",
+      "accion": "Registrar un solicitante con <script>alert(1)</script>.",
+      "esperado": "Se guarda como texto literal; la interfaz lo muestra con textContent.",
+      "real": "HTTP 201; guardado literal en MySQL y luego eliminado lógicamente.",
+      "estado": "APROBADO"
+    },
+    {
+      "id": "EX-04",
+      "accion": "Enviar JSON mal formado y un estado inexistente (\"CERRADA\").",
+      "esperado": "HTTP 400 con mensaje claro, sin trazas internas.",
+      "real": "JSON mal formado: HTTP 400 \"El cuerpo de la petición no es un JSON válido.\"; estado CERRADA: HTTP 400.",
+      "estado": "APROBADO"
+    }
+  ]
+}
