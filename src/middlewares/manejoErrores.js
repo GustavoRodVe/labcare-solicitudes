@@ -9,6 +9,14 @@ function manejarErrores(err, req, res, next) {
     return res.status(400).json({ mensaje: 'El cuerpo de la petición no es un JSON válido.' });
   }
 
+  // Cuerpo demasiado grande u otro error del cliente detectado por Express.
+  if (err.type === 'entity.too.large') {
+    return res.status(413).json({ mensaje: 'Los datos enviados son demasiado grandes.' });
+  }
+  if (Number.isInteger(err.status) && err.status >= 400 && err.status < 500) {
+    return res.status(err.status).json({ mensaje: 'La petición no es válida.' });
+  }
+
   console.error(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl}:`, err.code || '', err.message);
 
   const sinBase = ['ECONNREFUSED', 'PROTOCOL_CONNECTION_LOST', 'ER_ACCESS_DENIED_ERROR', 'ER_SERVER_SHUTDOWN', 'ETIMEDOUT'];

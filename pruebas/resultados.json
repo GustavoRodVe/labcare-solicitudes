@@ -1,5 +1,5 @@
 {
-  "fecha": "2026-11-23T15:17:24.532Z",
+  "fecha": "2026-11-23T15:45:07.712Z",
   "resultados": [
     {
       "id": "CP-01",
@@ -40,7 +40,7 @@
       "id": "CP-06",
       "accion": "Editar la solicitud de CP-01 (prioridad MEDIA, otra descripción) e intentar cambiar su código y estado por el cuerpo.",
       "esperado": "Se actualiza únicamente el registro seleccionado.",
-      "real": "HTTP 200; prioridad ALTA -> MEDIA; código, estado y fecha_registro sin cambios (SOL-20261123-001, PENDIENTE, 2026-11-23 11:17:24); la otra solicitud (SOL-20261123-002) quedó igual.",
+      "real": "HTTP 200; prioridad ALTA -> MEDIA; código, estado y fecha_registro sin cambios (SOL-20261123-001, PENDIENTE, 2026-11-23 11:45:07); la otra solicitud (SOL-20261123-002) quedó igual.",
       "estado": "APROBADO"
     },
     {
@@ -111,6 +111,20 @@
       "accion": "Enviar JSON mal formado y un estado inexistente (\"CERRADA\").",
       "esperado": "HTTP 400 con mensaje claro, sin trazas internas.",
       "real": "JSON mal formado: HTTP 400 \"El cuerpo de la petición no es un JSON válido.\"; estado CERRADA: HTTP 400.",
+      "estado": "APROBADO"
+    },
+    {
+      "id": "EX-05",
+      "accion": "Editar la solicitud que quedó RESUELTA en CP-08 (después de reactivarla en la base solo para esta prueba).",
+      "esperado": "El backend rechaza la edición de una solicitud en estado final con 409.",
+      "real": "HTTP 409 \"No se puede editar una solicitud RESUELTA.\"; la descripción en MySQL no cambió.",
+      "estado": "APROBADO"
+    },
+    {
+      "id": "EX-06",
+      "accion": "Enviar un cuerpo de más de 20 KB.",
+      "esperado": "Se rechaza con 413 y un mensaje claro, no con error 500.",
+      "real": "HTTP 413 \"Los datos enviados son demasiado grandes.\".",
       "estado": "APROBADO"
     }
   ]

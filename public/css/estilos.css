@@ -73,7 +73,7 @@ input:focus, select:focus, textarea:focus, .btn:focus-visible { outline: 2px sol
 .btn.primario { background: var(--azul); border-color: var(--azul); color: #fff; }
 .btn.primario:hover { background: #163d6b; }
 .btn.peligro { background: var(--rojo); border-color: var(--rojo); color: #fff; }
-.btn:disabled { opacity: 0.6; cursor: wait; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
 .btn.chico { padding: 4px 8px; font-size: 13px; }
 
 .acciones-form { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }

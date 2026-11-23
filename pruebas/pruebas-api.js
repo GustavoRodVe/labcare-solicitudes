@@ -222,6 +222,24 @@ async function main() {
     return { ok: r1.status === 400 && r2.status === 400 && sinTraza, real: `JSON mal formado: HTTP ${r1.status} "${r1.datos.mensaje}"; estado CERRADA: HTTP ${r2.status}.` };
   });
 
+  await caso('EX-05', 'Editar la solicitud que quedó RESUELTA en CP-08 (después de reactivarla en la base solo para esta prueba).',
+    'El backend rechaza la edición de una solicitud en estado final con 409.', async () => {
+      await pool.execute('UPDATE solicitud SET activo = TRUE WHERE id = ?', [creada.id]);
+      try {
+        const antes = await fila(creada.id);
+        const r = await api('PUT', '/api/solicitudes/' + creada.id, valida({ descripcion: 'Intento de editar una solicitud resuelta.' }));
+        const despues = await fila(creada.id);
+        return { ok: r.status === 409 && antes.descripcion === despues.descripcion, real: `HTTP ${r.status} "${r.datos.mensaje}"; la descripción en MySQL no cambió.` };
+      } finally {
+        await pool.execute('UPDATE solicitud SET activo = FALSE WHERE id = ?', [creada.id]);
+      }
+    });
+
+  await caso('EX-06', 'Enviar un cuerpo de más de 20 KB.', 'Se rechaza con 413 y un mensaje claro, no con error 500.', async () => {
+    const r = await api('POST', '/api/solicitudes', valida({ descripcion: 'x'.repeat(30000) }));
+    return { ok: r.status === 413, real: `HTTP ${r.status} "${r.datos.mensaje}".` };
+  });
+
   const aprobados = resultados.filter((r) => r.estado === 'APROBADO').length;
   console.log(`\n${aprobados}/${resultados.length} casos aprobados.`);
   fs.writeFileSync(path.join(__dirname, 'resultados.json'), JSON.stringify({ fecha: new Date().toISOString(), resultados }, null, 2));

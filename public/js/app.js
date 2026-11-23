@@ -13,6 +13,8 @@
   const cuerpoTabla = $('cuerpo-tabla');
   const caja = $('mensaje');
 
+  const ESTADOS_FINALES = ['RESUELTA', 'CANCELADA'];
+
   let solicitudesActuales = [];
   let seleccionada = null;
   let temporizadorMensaje = null;
@@ -120,9 +122,15 @@
       tr.appendChild(celda(formatearFecha(s.fecha_registro)));
       const acciones = document.createElement('div');
       acciones.className = 'acciones';
+      const btnEditar = boton('Editar', 'editar', s.id);
+      if (ESTADOS_FINALES.includes(s.estado)) {
+        // Una solicitud finalizada no se edita; el servidor también lo rechaza con 409.
+        btnEditar.disabled = true;
+        btnEditar.title = `No se puede editar una solicitud ${s.estado}`;
+      }
       acciones.append(
         boton('Ver', 'ver', s.id),
-        boton('Editar', 'editar', s.id),
+        btnEditar,
         boton('Estado', 'estado', s.id),
         boton('Eliminar', 'eliminar', s.id)
       );
@@ -220,7 +228,7 @@
       modoRegistro();
     } else {
       mostrarErrores(r.datos.errores);
-      mostrarMensaje(r.status === 400 ? 'advertencia' : 'error', r.datos.mensaje || 'No se pudo guardar la solicitud.');
+      mostrarMensaje([400, 409].includes(r.status) ? 'advertencia' : 'error', r.datos.mensaje || 'No se pudo guardar la solicitud.');
     }
     // Se recarga siempre para que la tabla refleje lo que hay en la base de datos.
     await cargarSolicitudes();
@@ -345,7 +353,13 @@
     if (b.dataset.accion === 'eliminar') return abrirEliminar(id);
     if (b.dataset.accion === 'editar') {
       const s = await obtenerSolicitud(id);
-      if (s) modoEdicion(s);
+      if (!s) return;
+      if (ESTADOS_FINALES.includes(s.estado)) {
+        mostrarMensaje('advertencia', `No se puede editar una solicitud ${s.estado}.`);
+        await cargarSolicitudes();
+        return;
+      }
+      modoEdicion(s);
     }
   });
 
