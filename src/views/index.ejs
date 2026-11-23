@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LabCare | Solicitudes de mantenimiento</title>
+  <link rel="stylesheet" href="/css/estilos.css">
+</head>
+<body>
+  <header class="cabecera">
+    <div class="contenedor">
+      <h1>LabCare</h1>
+      <p>Solicitudes de mantenimiento de equipos de laboratorio</p>
+    </div>
+  </header>
+
+  <!-- Mensajes de éxito, validación y error. aria-live hace que se lean en voz alta. -->
+  <div id="mensaje" class="mensaje oculto" role="status" aria-live="polite"></div>
+
+  <main class="contenedor principal">
+    <section class="tarjeta" aria-labelledby="titulo-form">
+      <h2 id="titulo-form">Nueva solicitud</h2>
+      <form id="form-solicitud" novalidate>
+        <input type="hidden" id="solicitud-id">
+        <label for="equipo_id">Equipo</label>
+        <select id="equipo_id" name="equipo_id" required>
+          <option value="">Cargando equipos...</option>
+        </select>
+        <small class="error-campo" data-campo="equipo_id"></small>
+
+        <label for="solicitante">Solicitante</label>
+        <input id="solicitante" name="solicitante" maxlength="100" required minlength="3" autocomplete="name" placeholder="Nombre de quien reporta">
+        <small class="error-campo" data-campo="solicitante"></small>
+
+        <label for="descripcion">Descripción de la falla</label>
+        <textarea id="descripcion" name="descripcion" rows="4" maxlength="500" required minlength="10" placeholder="Describa el problema (mínimo 10 caracteres)"></textarea>
+        <small class="error-campo" data-campo="descripcion"></small>
+
+        <label for="prioridad">Prioridad</label>
+        <select id="prioridad" name="prioridad" required>
+          <option value="">Seleccione...</option>
+          <% prioridades.forEach(function (p) { %><option value="<%= p %>"><%= p %></option><% }) %>
+        </select>
+        <small class="error-campo" data-campo="prioridad"></small>
+
+        <div class="acciones-form">
+          <button type="submit" id="btn-guardar" class="btn primario">Registrar solicitud</button>
+          <button type="button" id="btn-cancelar" class="btn oculto">Cancelar edición</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="tarjeta listado" aria-labelledby="titulo-lista">
+      <h2 id="titulo-lista">Solicitudes activas <span id="total" class="contador"></span></h2>
+      <form id="form-filtros" class="filtros" role="search">
+        <div>
+          <label for="f-texto">Buscar</label>
+          <input id="f-texto" type="search" placeholder="Código, solicitante o equipo">
+        </div>
+        <div>
+          <label for="f-prioridad">Prioridad</label>
+          <select id="f-prioridad">
+            <option value="">Todas</option>
+            <% prioridades.forEach(function (p) { %><option value="<%= p %>"><%= p %></option><% }) %>
+          </select>
+        </div>
+        <div>
+          <label for="f-estado">Estado</label>
+          <select id="f-estado">
+            <option value="">Todos</option>
+            <% estados.forEach(function (e) { %><option value="<%= e %>"><%= e.replace('_', ' ') %></option><% }) %>
+          </select>
+        </div>
+        <button type="button" id="btn-limpiar" class="btn">Limpiar</button>
+      </form>
+
+      <div class="tabla-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Código</th>
+              <th scope="col">Equipo</th>
+              <th scope="col">Solicitante</th>
+              <th scope="col">Prioridad</th>
+              <th scope="col">Estado</th>
+              <th scope="col">Registro</th>
+              <th scope="col">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="cuerpo-tabla">
+            <tr><td colspan="7" class="vacio">Cargando solicitudes...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <!-- Detalle de una solicitud -->
+  <dialog id="dlg-detalle" aria-labelledby="dlg-detalle-titulo">
+    <h2 id="dlg-detalle-titulo">Detalle de la solicitud</h2>
+    <dl id="detalle-datos" class="detalle"></dl>
+    <div class="acciones-form"><button type="button" class="btn" data-cerrar>Cerrar</button></div>
+  </dialog>
+
+  <!-- Cambio de estado -->
+  <dialog id="dlg-estado" aria-labelledby="dlg-estado-titulo">
+    <h2 id="dlg-estado-titulo">Cambiar estado</h2>
+    <p id="estado-texto"></p>
+    <label for="estado-nuevo">Nuevo estado</label>
+    <select id="estado-nuevo">
+      <% estados.forEach(function (e) { %><option value="<%= e %>"><%= e.replace('_', ' ') %></option><% }) %>
+    </select>
+    <p id="estado-aviso" class="aviso oculto" role="alert"></p>
+    <div class="acciones-form">
+      <button type="button" id="btn-confirmar-estado" class="btn primario">Cambiar estado</button>
+      <button type="button" class="btn" data-cerrar>Cancelar</button>
+    </div>
+  </dialog>
+
+  <!-- Confirmación de eliminación lógica -->
+  <dialog id="dlg-eliminar" aria-labelledby="dlg-eliminar-titulo">
+    <h2 id="dlg-eliminar-titulo">Eliminar solicitud</h2>
+    <p id="eliminar-texto"></p>
+    <div class="acciones-form">
+      <button type="button" id="btn-confirmar-eliminar" class="btn peligro">Sí, eliminar</button>
+      <button type="button" class="btn" data-cerrar>Cancelar</button>
+    </div>
+  </dialog>
+
+  <!-- Flujo de estados que el servidor también aplica; la interfaz lo usa para avisar antes de enviar. -->
+  <script id="transiciones" type="application/json"><%- JSON.stringify(transiciones).replace(/</g, '\\u003c') %></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>
