@@ -1,0 +1,30 @@
+# Matriz de pruebas
+
+Las pruebas se ejecutaron el 23/11/2026 con `npm test` (script `pruebas/pruebas-api.js`) contra la API y la base de datos MySQL reales. Cada caso revisa la respuesta HTTP y además consulta la tabla en MySQL para confirmar si se guardó o no. El recorrido de la interfaz (`pruebas/capturas-ui.js`) repite los casos principales desde el navegador y deja las capturas en `evidencias/capturas`.
+
+| ID | Acción / datos | Resultado esperado | Resultado real | Estado | Evidencia |
+|----|----------------|--------------------|----------------|--------|-----------|
+| CP-01 | Registrar solicitud con datos válidos y equipo existente (EQ-001). | Se crea una solicitud PENDIENTE, con código único y persistencia. | HTTP 201; código SOL-20261123-001; estado PENDIENTE; fila en MySQL con id 1. | APROBADO | 02-registro-exito, 19-bd-solicitudes |
+| CP-02 | Solicitante vacío y luego con 2 caracteres ("  Al  "). | El backend rechaza el registro; no se guarda. | HTTP 400 "El solicitante es obligatorio." y HTTP 400 "El solicitante debe tener al menos 3 caracteres."; filas antes 1, después 1. | APROBADO | 04-validacion-interfaz, 17-backend-rechaza |
+| CP-03 | Descripción vacía y luego "  Falla  " (5 caracteres sin espacios externos). | El backend rechaza el registro; no se guarda. | HTTP 400 "La descripción es obligatoria." y HTTP 400 "La descripción debe tener al menos 10 caracteres."; filas antes 1, después 1. | APROBADO | 04-validacion-interfaz, 17-backend-rechaza |
+| CP-04 | Prioridad "URGENTE". | El backend rechaza el valor. | HTTP 400 "La prioridad debe ser BAJA, MEDIA o ALTA."; no se guardó (filas 1 -> 1). | APROBADO | 17-backend-rechaza |
+| CP-05 | Registrar con equipo_id 999 (no existe). | El sistema rechaza la operación y no crea solicitud huérfana. | HTTP 400 "El equipo seleccionado no existe."; filas 1 -> 1; huérfanas en la base: 0. | APROBADO | 17-backend-rechaza |
+| CP-06 | Editar la solicitud de CP-01 (prioridad MEDIA, otra descripción) e intentar cambiar su código y estado por el cuerpo. | Se actualiza únicamente el registro seleccionado. | HTTP 200; prioridad ALTA -> MEDIA; código, estado y fecha_registro sin cambios (SOL-20261123-001, PENDIENTE, 2026-11-23 11:17:24); la otra solicitud (SOL-20261123-002) quedó igual. | APROBADO | 06-edicion, 07-edicion-exito |
+| CP-07 | Cambiar PENDIENTE a EN_PROCESO. | La transición se acepta. | HTTP 200 "Solicitud SOL-20261123-001 ahora está EN_PROCESO."; estado en MySQL: EN_PROCESO. | APROBADO | 08-estado-dialogo, 09-estado-en-proceso |
+| CP-08 | Pasar a RESUELTA y luego intentar RESUELTA a PENDIENTE. | La transición se rechaza y el estado no cambia. | EN_PROCESO -> RESUELTA: HTTP 200. RESUELTA -> PENDIENTE: HTTP 409 "Transición no permitida: RESUELTA a PENDIENTE. RESUELTA es un estado final y ya no puede cambiar."; estado en MySQL: RESUELTA. | APROBADO | 10-transicion-no-permitida, 17-backend-rechaza |
+| CP-09 | Eliminar lógicamente la solicitud de CP-01. | Desaparece del listado activo, pero permanece en la base de datos. | HTTP 200; aparece en el listado: no; fila en MySQL: sí, activo=0; detalle por ID: HTTP 404. | APROBADO | 11-confirmar-eliminar, 12-eliminado, 19-bd-solicitudes |
+| CP-10 | Buscar "quispe" y "PROYECTOR" (minúsculas/mayúsculas) y filtrar prioridad BAJA + estado PENDIENTE, y prioridad ALTA. | El listado muestra solo coincidencias válidas. | "quispe": 1 resultado(s); "PROYECTOR": 1; BAJA+PENDIENTE: 1; ALTA: 1, todos coinciden; filtro "URGENTE": HTTP 400. | APROBADO | 13-busqueda-equipo, 14-busqueda-solicitante, 15-filtros |
+| CP-11 | Consultar, editar, cambiar estado y eliminar el ID 999999 (no existe). | Se informa que el recurso no existe; no se produce error no controlado. | GET 404, PUT 404, PATCH 404, DELETE 404: "La solicitud no existe o fue eliminada.". | APROBADO | 17-backend-rechaza |
+| CP-12 | Registrar, detener el servidor HTTP, iniciar uno nuevo y consultar por ID. | Los datos siguen disponibles desde la base de datos. | Registrada SOL-20261123-004; tras reiniciar el servidor (nuevo puerto) GET devuelve HTTP 200 con el mismo código. | APROBADO | 16-tras-reiniciar |
+| EX-01 | Equipo EQ-004 marcado como DE_BAJA e intentar registrar una solicitud con él. | El backend rechaza el equipo no disponible. | HTTP 400 "El equipo seleccionado no está disponible.". | APROBADO | Salida de npm test |
+| EX-02 | Búsqueda con inyección SQL: q = ' OR 1=1 --  | No devuelve todo el listado ni produce error. | HTTP 200; resultados: 0. | APROBADO | Salida de npm test |
+| EX-03 | Registrar un solicitante con <script>alert(1)</script>. | Se guarda como texto literal; la interfaz lo muestra con textContent. | HTTP 201; guardado literal en MySQL y luego eliminado lógicamente. | APROBADO | Salida de npm test |
+| EX-04 | Enviar JSON mal formado y un estado inexistente ("CERRADA"). | HTTP 400 con mensaje claro, sin trazas internas. | JSON mal formado: HTTP 400 "El cuerpo de la petición no es un JSON válido."; estado CERRADA: HTTP 400. | APROBADO | Salida de npm test |
+
+Resultado: 16 de 16 casos aprobados. Los casos EX-01 a EX-04 son pruebas adicionales que agregamos para el equipo dado de baja, la inyección SQL en la búsqueda, el texto con etiquetas HTML y el JSON mal formado.
+
+## Error encontrado durante las pruebas
+
+Al automatizar el recorrido de la interfaz, el segundo registro seguido fallaba con el aviso "Seleccione un equipo". La causa estaba en el script de prueba: esperaba el mensaje de éxito del registro anterior, que seguía visible, y no la respuesta nueva del servidor. Cuando esa respuesta llegaba, el formulario se limpiaba y borraba el equipo ya elegido. Corregimos el script para que espere la respuesta real de la API y la recarga del listado, y volvimos a ejecutar el recorrido completo, esta vez sin errores. La aplicación ya cumplía la regla de no mostrar éxito antes de que responda el servidor.
+
+También notamos que el cliente mysql mostraba mal las tildes en las capturas de la base de datos. Se corrigió agregando `--default-character-set=utf8mb4`.
